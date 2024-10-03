@@ -1,10 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
-WORKDIR /app
-EXPOSE 8080
-
-ENV ASPNETCORE_URLS=http://+:8080
-
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
 WORKDIR /src
 
 COPY ["WebApp/WebApp.csproj", "WebApp/"]
@@ -14,10 +8,7 @@ COPY . .
 WORKDIR "/src/WebApp"
 RUN dotnet build "WebApp.csproj" -c Release -o /app/build
 
-FROM build AS publish
-RUN dotnet publish "WebApp.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-nanoserver-1809 AS base
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/build .
 ENTRYPOINT ["dotnet", "WebApp.dll"]
