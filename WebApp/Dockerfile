@@ -7,10 +7,17 @@ ENV ASPNETCORE_URLS=http://+:8080
 FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
 ARG configuration=Release
 WORKDIR /src
+
+# .sln dosyasını ve WebApp projesinin .csproj dosyasını kopyalıyoruz
+COPY ["WebApp.sln", "."]
 COPY ["WebApp/WebApp.csproj", "WebApp/"]
-RUN dotnet restore "WebApp/WebApp.csproj"  # Linux formatında yol kullanımı
+
+# Proje bağımlılıklarını geri yüklüyoruz
+RUN dotnet restore "WebApp/WebApp.csproj"
+
+# Diğer tüm dosyaları kopyalıyoruz ve build işlemini yapıyoruz
 COPY . .
-WORKDIR /src/WebApp
+WORKDIR "/src/WebApp"
 RUN dotnet build "WebApp.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
