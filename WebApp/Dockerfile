@@ -1,31 +1,16 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-nanoserver-1809 AS base
-WORKDIR /app
-EXPOSE 8080
-
-ENV ASPNETCORE_URLS=http://+:8080
-
+# Temel imaj olarak Windows tabanlı .NET SDK
 FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
-ARG configuration=Release
 WORKDIR /src
 
-
-# .sln dosyasını ve WebApp projesinin .csproj dosyasını kopyalıyoruz
-COPY ["WebApp.sln", "."]
 COPY ["WebApp/WebApp.csproj", "WebApp/"]
-
-# Proje bağımlılıklarını geri yüklüyoruz
 RUN dotnet restore "WebApp/WebApp.csproj"
 
-# Diğer tüm dosyaları kopyalıyoruz ve build işlemini yapıyoruz
 COPY . .
 WORKDIR "/src/WebApp"
-RUN dotnet build "WebApp.csproj" -c $configuration -o /app/build
+RUN dotnet build "WebApp.csproj" -c Release -o /app/build
 
-FROM build AS publish
-ARG configuration=Release
-RUN dotnet publish "WebApp.csproj" -c $configuration -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+# Temel imaj olarak Windows tabanlı .NET runtime
+FROM mcr.microsoft.com/dotnet/aspnet:7.0-nanoserver-1809 AS base
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app/build .
 ENTRYPOINT ["dotnet", "WebApp.dll"]
