@@ -8,7 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
 ARG configuration=Release
 WORKDIR /src
 
-USER ContainerAdministrator
+
 # .sln dosyasını ve WebApp projesinin .csproj dosyasını kopyalıyoruz
 COPY ["WebApp.sln", "."]
 COPY ["WebApp/WebApp.csproj", "WebApp/"]
