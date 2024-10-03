@@ -9,4 +9,4 @@ services:
       context: .
       dockerfile: WebApp/Dockerfile
     ports:
-      - 5230:5230
+      - 8080:8080
