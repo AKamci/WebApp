@@ -2,13 +2,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-# Projeyi kopyalayın ve bağımlılıkları yükleyin
-COPY *.csproj ./
-RUN dotnet restore
+# Projeyi kopyalayın
+COPY WebApp.csproj ./
+
+# Bağımlılıkları yükleyin
+RUN dotnet restore WebApp.csproj
 
 # Uygulama kodunu kopyalayın ve derleyin
 COPY . ./
-RUN dotnet publish -c Release -o out
+RUN dotnet publish WebApp.csproj -c Release -o out
 
 # 2. Aşama: Çalıştırma Aşaması
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
