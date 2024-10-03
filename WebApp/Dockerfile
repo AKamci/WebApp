@@ -8,9 +8,9 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0-nanoserver-1809 AS build
 ARG configuration=Release
 WORKDIR /src
 COPY ["WebApp/WebApp.csproj", "WebApp/"]
-RUN dotnet restore "WebApp\WebApp.csproj"
+RUN dotnet restore "WebApp/WebApp.csproj"  # Linux formatında yol kullanımı
 COPY . .
-WORKDIR "/src/WebApp"
+WORKDIR /src/WebApp
 RUN dotnet build "WebApp.csproj" -c $configuration -o /app/build
 
 FROM build AS publish
