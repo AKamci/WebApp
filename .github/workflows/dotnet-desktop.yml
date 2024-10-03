@@ -26,7 +26,7 @@ jobs:
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: Dockerfile
+        file: WebApp/Dockerfile  # Dockerfile'ın doğru dizini
         push: true
         tags: akamci/postgre:latest
 
